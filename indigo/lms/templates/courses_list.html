@@ -1,0 +1,27 @@
+<%page expression_filter="h"/>
+<%namespace name='static' file='static_content.html'/>
+<%! from django.utils.translation import gettext as _ %>
+
+<div class="list-courses">    
+  <div class="container">
+      <h2 class=" title">Các khóa học</h2>
+      <div class=" content">
+          <div class="row">
+          ## limiting the course number by using HOMEPAGE_COURSE_MAX as the maximum number of courses
+          %for course in courses[:homepage_course_max]:
+              <%include file="course.html" args="course=course" />
+          %endfor
+          ## in case there are courses that are not shown on the homepage, a 'View all Courses' link should appear
+            % if homepage_course_max and len(courses) > homepage_course_max:
+            <div style="width: 100%;">
+              <button type="button" style="float: right;" class="btn btn-primary" href="${marketing_link('COURSES')}">${_("Xem thêm")}</button>
+              <!-- <button class="courses-more-cta btn btn-login text-white bg-primary" style="float:right;" href="${marketing_link('COURSES')}"> ${_("Xem thêm")} </button> -->
+            </div>
+          % endif
+        </div>
+      </div>
+  </div>
+</div>
+
+
+

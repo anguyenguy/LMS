@@ -1,0 +1,61 @@
+## mako
+<%page expression_filter="h"/>
+<%!
+  from django.urls import reverse
+  from django.utils.translation import ugettext as _
+  from lms.djangoapps.branding.api import get_footer
+  from openedx.core.djangoapps.lang_pref.api import footer_language_selector_is_enabled
+%>
+<% footer = get_footer(is_secure=is_secure) %>
+<% icp_license_info = getattr(settings, 'ICP_LICENSE_INFO', {})%>
+<%namespace name='static' file='static_content.html'/>
+
+<footer class="site-footer">
+  <div class="container">
+      <div class="row justify-content-md-between">
+          <div class="col-xl-2 col-lg-3 col-md-6 col-sm-12">
+              <ul class="footer-nav">
+                  <li><a href="#">Giới thiệu</a></li>
+                  <li><a href="#">Chương trình học</a></li>
+                  <li><a href="#">Mentor</a></li>
+                  <li><a href="#">Tuyển sinh</a></li>
+              </ul>
+          </div>
+
+          <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+              <ul class="footer-nav">
+                  <li><a href="#">Câu hỏi thường gặp</a></li>
+                  <li><a href="#">Diễn đàn</a></li>
+                  <li><a href="#">Tra điểm</a></li>
+                  <li><a href="#">Kết nối Hanah</a></li>
+              </ul>
+          </div>
+
+          <div class="col-xl-3 col-lg-3 col-md-12 col-sm-12">
+              <div class="footer-logo">
+                  <a href="https://lilac.funix.edu.vn">
+                      <img src="${static.url('images/assets/logo.png')}" alt="logo" srcset="">
+                  </a>
+                  <p>Kết nối cùng FUNiX</p>
+              </div>
+              <ul class="list-social">
+                  <li><a href="#"><i class="fab fa-twitter"></i></a></li>
+                  <li><a href="#"><i class="fab fa-facebook-square"></i></a></li>
+                  <li><a href="#"><i class="fab fa-youtube"></i></a></li>
+                  <li><a href="#"><i class="fab fa-linkedin-in"></i></a></li>
+              </ul>
+          </div>
+      </div>
+  </div>
+</footer>   <!-- .site-footer -->
+% if include_dependencies:
+  <%static:js group='base_vendor'/>
+  <%static:css group='style-vendor'/>
+  <%include file="widgets/segment-io.html" />
+  <%include file="widgets/segment-io-footer.html" />
+% endif
+% if footer_css_urls:
+  % for url in footer_css_urls:
+    <link rel="stylesheet" type="text/css" href="${url}"></link>
+  % endfor
+% endif

@@ -1,0 +1,116 @@
+<%page expression_filter="h"/>
+<%!
+    import json
+    from django.utils.translation import ugettext as _
+    from openedx.core.djangoapps.site_configuration import helpers as configuration_helpers
+    from openedx.core.djangolib.js_utils import dump_js_escaped_json
+%>
+<%namespace name='static' file='/static_content.html'/>
+
+<%inherit file="../main.html" />
+
+<%block name="pagetitle">${_("Sign in or Register")}</%block>
+
+<%block name="js_extra">
+    <%static:require_module module_name="js/student_account/logistration_factory" class_name="LogistrationFactory">
+        var options = ${data | n, dump_js_escaped_json};
+        LogistrationFactory(options);
+        if ('newrelic' in window) {
+            newrelic.finished();
+            // Because of a New Relic bug, the finished() event doesn't show up
+            // in Insights, so we have to make a new PageAction that is basically
+            // the same thing. We still want newrelic.finished() for session
+            // traces though.
+            newrelic.addPageAction('xfinished');
+        }
+    </%static:require_module>
+    % if configuration_helpers.get_value('DISPLAY_TOS_IN_MODAL_ON_REGISTRATION_PAGE', False):
+    <script type="text/javascript" src="${static.url('js/student_account/tos_modal.js')}"></script>
+    % endif
+</%block>
+
+<%block name="header_extras">
+    % for template_name in ["account", "access", "form_field", "login", "register", "institution_login", "institution_register", "password_reset", "hinted_login"]:
+        <script type="text/template" id="${template_name}-tpl">
+            <%static:include path="student_account/${template_name}.underscore" />
+        </script>
+    % endfor
+</%block>
+
+<link href="${static.url('css/bootstrap/bootstrap.min.css')}" rel="stylesheet">
+<link rel="stylesheet" href="${static.url('css/style-login-page.css')}">
+
+
+
+<main class="site-main fix-mg">
+
+    <div class="login-page">
+        <div class="container">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="login-page__box">
+
+                        <div class="content form-wrapper" >
+                            <div class="content-top">
+                                <a href="index-chuaDN.html"><img src="${static.url('images/logo-login-page.png')}" alt="logo"></a>
+                                <p>Chào mừng bạn</p>
+                                <a href="#" class="btn"><img src="${static.url('images/icon-googe-color.svg')}"> Đăng nhập với Google</a>
+                                <p>hoặc</p>
+                            </div>
+                            <form id="login" tabindex="-1" method="POST">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Email</label>
+                                    <input type="email" class="form-control" id="login-email-styled" aria-describedby="login-email-desc login-email-validation-error" placeholder="Nhập địa chỉ emai">
+                                    <small id="emailHelp" class="form-text text-muted">The email address you used to register with FUNiX</small>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Mật khẩu</label>
+                                    <input type="password" class="form-control" id="login-password-styled" placeholder="Nhập mật khẩu">
+                                </div>
+                                <!-- <a href="#" class="forgot-password">Quên mật khẩu?</a> -->
+                                <button type="submit" id="login-button-styled" class="btn btn-primary">Đăng nhập</button>
+                            </form>
+                            <!-- <div class="registe-account">
+                                <p>Bạn chưa có tài khoản?</p>
+                                <a href="#" class="registe-account">Đăng ký</a>
+                            </div> -->
+                        </div>
+                        <!-- .content -->
+
+                        <div class="background">
+                            <img src="${static.url('images/background.png')}">
+                        </div>
+                        <!-- .background -->
+                    </div>
+                    <!-- /.login-page__box -->
+                </div>
+            </div>
+
+        </div>
+        <!-- .container -->
+    </div>
+
+</main>
+<!-- .site-main -->
+
+<div class="section-bkg-wrapper">
+    <main id="main" aria-label="Content" tabindex="-1">
+        <div id="content-container" class="login-register-content">
+            % if enable_enterprise_sidebar:
+                <%include file="enterprise_sidebar.html" />
+                <%
+                    border_class = 'border-left'
+                %>
+            % else:
+                <%
+                    border_class = ''
+                %>
+            % endif
+            <div id="login-and-registration-container" class="login-register ${border_class}"></div>
+        </div>
+    </main>
+</div>
+
+
+<script type="text/javascript" src="${static.url('js/jquery-1.12.4.js')}"></script>
+<script type="text/javascript" src="${static.url('js/login-page.js')}"></script>
